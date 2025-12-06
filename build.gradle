@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.0'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.github.node-gradle.node' version '7.0.1'
 }
 ext {
     springAiVersion = "1.0.3"
@@ -50,4 +51,39 @@ tasks.named('test') {
 
 bootRun {
     mainClass = 'uz.traffic.light.hackaton.TrafficLightHackatonApplication'
+}
+
+node {
+    version = '20.10.0'
+    npmVersion = '10.2.3'
+    download = true
+    workDir = file("${project.projectDir}/.gradle/nodejs")
+    nodeProjectDir = file("${project.projectDir}/src/main/front-app")
+}
+
+task installFrontendDependencies(type: com.github.gradle.node.npm.task.NpmTask) {
+    description = 'Install frontend dependencies'
+    workingDir = file("${project.projectDir}/src/main/front-app")
+    args = ['install']
+}
+
+task buildFrontend(type: com.github.gradle.node.npm.task.NpmTask, dependsOn: installFrontendDependencies) {
+    description = 'Build frontend application'
+    workingDir = file("${project.projectDir}/src/main/front-app")
+    args = ['run', 'build']
+}
+
+task copyFrontendBuild(type: Copy, dependsOn: buildFrontend) {
+    description = 'Copy frontend build to static resources'
+    from file("${project.projectDir}/src/main/front-app/dist")
+    into file("${project.buildDir}/resources/main/static/simulation")
+}
+
+processResources {
+    dependsOn copyFrontendBuild
+}
+
+clean {
+    delete file("${project.projectDir}/src/main/front-app/dist")
+    delete file("${project.projectDir}/src/main/front-app/node_modules")
 }
