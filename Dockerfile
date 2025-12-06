@@ -13,6 +13,9 @@ COPY settings.gradle .
 # Copy source code
 COPY src src
 
+# Make file executable
+RUN chmod 700 ./gradlew
+
 # Build the Spring Boot application
 RUN ./gradlew clean bootJar --no-daemon
 
