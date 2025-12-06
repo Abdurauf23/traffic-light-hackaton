@@ -57,6 +57,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    environment: muaddib-secrets
     needs: build-image
     env:
       SERVICE_FILE: "/root/.service"
