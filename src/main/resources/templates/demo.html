@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Demo Video</title>
+    <link rel="stylesheet" href="/styles/content-section.css">
+    <script src="/scripts/scripts.js"></script>
     <style>
         body {
             margin: 0;
@@ -48,6 +50,20 @@
 </head>
 <body>
 
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <span data-translate="logo">Smart Traffic Lights</span>
+            </div>
+            <div class="lang-switcher">
+                <button class="lang-btn active" onclick="changeLanguage('en')">EN</button>
+                <button class="lang-btn" onclick="changeLanguage('ru')">RU</button>
+            </div>
+        </div>
+    </div>
+</header>
+
 <section class="video-section">
     <h2 class="video-title">Demo Video</h2>
 
@@ -61,6 +77,34 @@
         </iframe>
     </div>
 </section>
+
+<section id="content-links">
+    <div class="container">
+        <h2 class="section-title" data-translate="contentSection">Content</h2>
+
+        <div class="content-grid">
+            <a href="/" class="content-card">
+                <div class="content-card-inner">
+                    <h3 data-translate="mainPage">Main Page</h3>
+                    <p data-translate="mainPageDescription">Go to the main page to see the project.</p>
+                </div>
+            </a>
+
+            <a href="chat" class="content-card">
+                <div class="content-card-inner">
+                    <h3 data-translate="chat">Chat</h3>
+                    <p data-translate="chatDescription">Try out ChatGPT like chat which will answer all questions about the project.</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <p data-translate="footer">AI500 Hackathon 2024 | Smart Traffic Lights Team</p>
+    </div>
+</footer>
 
 </body>
 </html>
