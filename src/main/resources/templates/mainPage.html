@@ -505,6 +505,46 @@
             max-width: 350px;
             margin: 0 auto 20px;
         }
+
+        /* Content Section */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .content-card {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .content-card-inner {
+            background: var(--card-black);
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-green);
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+            height: 100%;
+        }
+
+        .content-card-inner:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.25);
+            border-color: var(--primary-green);
+        }
+
+        .content-card-inner h3 {
+            color: var(--primary-green);
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+        }
+
+        .content-card-inner p {
+            color: var(--text-gray);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
     </style>
 </head>
 
@@ -1164,6 +1204,28 @@
     </div>
 </section>
 
+<section id="content-links">
+    <div class="container">
+        <h2 class="section-title" data-translate="contentSection">Content</h2>
+
+        <div class="content-grid">
+            <a href="demo" class="content-card">
+                <div class="content-card-inner">
+                    <h3 data-translate="demoVideo">Demo Video</h3>
+                    <p data-translate="demoVideoDescription">Watch a short demonstration of our smart traffic system in action.</p>
+                </div>
+            </a>
+
+            <a href="chat" class="content-card">
+                <div class="content-card-inner">
+                    <h3 data-translate="chat">Chat</h3>
+                    <p data-translate="chatDescription">Try out ChatGPT like chat which will answer all questions about the project.</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
 <footer>
     <div class="container">
         <p data-translate="footer">AI500 Hackathon 2024 | Smart Traffic Lights Team</p>
@@ -1173,6 +1235,11 @@
 <script>
     const translations = {
         en: {
+            contentSection: "Content",
+            demoVideo: "Demo Video",
+            demoVideoDescription: "Watch a short demonstration of our smart traffic system in action.",
+            chat: "Chat",
+            chatDescription: "Try out ChatGPT like chat which will answer all questions about the project.",
             optimizedFlow: "Optimized Flow",
             reducedWait: "Reduced Wait Time",
             logo: "Smart Traffic Lights",
@@ -1251,6 +1318,11 @@
             footer: "AI500 Hackathon 2024 | Muad'dib Team"
         },
         ru: {
+            contentSection: "Ссылки на другие страницы",
+            demoVideo: "Демонтрационное видео",
+            demoVideoDescription: "Посмотрите короткую демонстрацию нашей интеллектуальной системы дорожного движения в действии.",
+            chat: "Чат с ботом",
+            chatDescription: "Попробуйте чат, похожий на ChatGPT, который ответит на все вопросы о проекте",
             optimizedFlow: "Оптимизированный поток машин",
             reducedWait: "Меньшее время ожидания",
             logo: "Умные Светофоры",
