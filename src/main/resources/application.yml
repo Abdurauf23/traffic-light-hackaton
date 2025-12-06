@@ -1,3 +1,10 @@
 spring:
   application:
     name: traffic-light-hackaton
+  ai:
+    openai:
+      api-key: ${SPRING_OPENAI_API_KEY}
+
+chat:
+  context:
+    text: classpath:static/context/chatContextText.txt

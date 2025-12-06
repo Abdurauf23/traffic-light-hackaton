@@ -2,10 +2,175 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Smart Traffic – Chat</title>
+
+    <style>
+        :root {
+            --primary-green: #00ff88;
+            --dark-green: #00cc6a;
+            --bg-black: #0a0a0a;
+            --card-black: #1a1a1a;
+            --text-white: #ffffff;
+            --text-gray: #b0b0b0;
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            background-color: var(--bg-black);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-white);
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--card-black);
+            border-right: 2px solid var(--primary-green);
+            padding: 25px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            color: var(--primary-green);
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        .link-card {
+            background: var(--bg-black);
+            border: 2px solid var(--primary-green);
+            padding: 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--primary-green);
+            transition: 0.25s;
+            text-align: center;
+            display: block;
+        }
+
+        .link-card:hover {
+            background: var(--primary-green);
+            color: var(--bg-black);
+            transform: translateX(5px);
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.25);
+        }
+
+        /* Chat area */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+        }
+
+        .chat-window {
+            flex: 1;
+            background: var(--card-black);
+            border: 2px solid var(--primary-green);
+            border-radius: 10px;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: inset 0 0 15px rgba(0, 255, 136, 0.1);
+            font-size: 1.1rem;
+        }
+
+        .input-area {
+            margin-top: 20px;
+            display: flex;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 15px;
+            background: var(--card-black);
+            border: 2px solid var(--primary-green);
+            border-radius: 10px;
+            color: var(--text-white);
+            font-size: 1.1rem;
+            outline: none;
+        }
+
+        .chat-input:focus {
+            box-shadow: 0 0 10px rgba(0,255,136,0.3);
+        }
+    </style>
 </head>
+
 <body>
 
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>Navigation</h2>
+
+    <a class="link-card" href="/">Home</a>
+    <a class="link-card" href="/demo">Demo Video</a>
+</div>
+
+<!-- Chat -->
+<div class="chat-container">
+    <div id="chatWindow" class="chat-window">
+        <!-- No history needed — clean start -->
+    </div>
+
+    <div class="input-area">
+        <input id="chatInput" class="chat-input" type="text" placeholder="Type your message and press Enter...">
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById('chatInput');
+    const chat = document.getElementById('chatWindow');
+
+    input.addEventListener('keydown', function(e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+
+            let message = input.value.trim();
+            if (message.length === 0) return;
+
+            // display message
+            let bubble = document.createElement("div");
+            bubble.style.marginBottom = "12px";
+            bubble.innerHTML = `<span style="color: var(--primary-green); font-weight: bold;">You:</span> ${message}`;
+            chat.appendChild(bubble);
+
+            // auto scroll
+            chat.scrollTop = chat.scrollHeight;
+
+            // clear input
+            input.value = "";
+
+            // send request (dummy fetch — replace URL)
+            fetch("/api/ask", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({message})
+            })
+                .then(res => res.json())
+                .then(data => {
+                    let bot = document.createElement("div");
+                    bot.style.marginBottom = "12px";
+                    bot.innerHTML =
+                        `<span style="color: var(--dark-green); font-weight: bold;">AI:</span> ${data.response}`;
+                    chat.appendChild(bot);
+                    chat.scrollTop = chat.scrollHeight;
+                })
+                .catch(() => {
+                    let error = document.createElement("div");
+                    error.style.marginBottom = "12px";
+                    error.style.color = "#ff6b6b";
+                    error.textContent = "Error: could not reach server.";
+                    chat.appendChild(error);
+                });
+        }
+    });
+</script>
 
 </body>
 </html>
