@@ -22,14 +22,14 @@ jobs:
   build-image:
     name: Build an image
     runs-on: ubuntu-latest
+    environment: muaddib-secrets
     needs: checkout-branch
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-      
+
     - name: Login to the Container Registry
       uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
-      environment: muaddib-secrets
       with:
         registry: ${{ env.REGISTRY }}
         username: ${{ secrets.GHCR_USER }}
