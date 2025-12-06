@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Traffic Lights - AI-Powered Traffic Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #00ff88;
+            --dark-green: #00cc6a;
+            --bg-black: #0a0a0a;
+            --card-black: #1a1a1a;
+            --text-white: #ffffff;
+            --text-gray: #b0b0b0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--bg-black) 0%, var(--card-black) 100%);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--primary-green);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-green);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo svg {
+            width: 40px;
+            height: 40px;
+        }
+
+        .lang-switcher {
+            display: flex;
+            gap: 10px;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: 2px solid var(--primary-green);
+            color: var(--primary-green);
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+
+        .lang-btn:hover,
+        .lang-btn.active {
+            background: var(--primary-green);
+            color: var(--bg-black);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+            background: linear-gradient(180deg, var(--card-black) 0%, var(--bg-black) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-illustration {
+            max-width: 600px;
+            margin: 40px auto 20px;
+        }
+
+        .scroll-animate-car {
+            transition: transform 0.3s ease-out;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary-green);
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--text-gray);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 80px 0;
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 50px 0;
+            }
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: var(--primary-green);
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--primary-green);
+        }
+
+        /* Problem & Solution */
+        .problem-solution {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .card {
+            background: var(--card-black);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid var(--primary-green);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
+        }
+
+        .card-icon {
+            width: 70px;
+            height: 70px;
+            margin-bottom: 20px;
+            filter: brightness(0) saturate(100%) invert(73%) sepia(68%) saturate(464%) hue-rotate(94deg) brightness(103%) contrast(101%);
+        }
+
+        .card-icon.no-filter {
+            filter: none;
+        }
+
+        .card-icon.red-icon {
+            filter: brightness(0) saturate(100%) invert(45%) sepia(95%) saturate(2578%) hue-rotate(335deg) brightness(95%) contrast(95%);
+        }
+
+        .card h3 {
+            color: var(--primary-green);
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card p,
+        .card ul {
+            color: var(--text-gray);
+            margin-bottom: 15px;
+        }
+
+        .card ul {
+            list-style-position: inside;
+            padding-left: 0;
+        }
+
+        .card ul li {
+            margin-bottom: 8px;
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .team-member {
+            background: var(--card-black);
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid var(--primary-green);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+        }
+
+        .team-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            border: 3px solid var(--primary-green);
+            overflow: hidden;
+            background: var(--card-black);
+        }
+
+        .team-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .team-member h4 {
+            color: var(--primary-green);
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+
+        .team-member .role {
+            color: var(--dark-green);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .team-member .skills {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .team-member .stack {
+            color: var(--text-gray);
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        /* Roadmap */
+        .roadmap-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+            margin-top: 40px;
+            align-items: start;
+        }
+
+        .roadmap-content {
+            background: var(--card-black);
+            padding: 40px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-green);
+            min-height: 400px;
+        }
+
+        .roadmap-content h3 {
+            color: var(--primary-green);
+            font-size: 2rem;
+            margin-bottom: 25px;
+        }
+
+        .roadmap-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .roadmap-content ul li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+
+        .roadmap-content ul li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--primary-green);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .roadmap-tabs {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .roadmap-tab {
+            background: var(--card-black);
+            padding: 20px 25px;
+            border-radius: 10px;
+            border: 2px solid var(--text-gray);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            position: relative;
+        }
+
+        .roadmap-tab:hover {
+            border-color: var(--primary-green);
+            transform: translateX(-5px);
+        }
+
+        .roadmap-tab.active {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%);
+            border-color: var(--primary-green);
+            color: var(--bg-black);
+            transform: translateX(-5px);
+        }
+
+        .roadmap-tab h4 {
+            font-size: 1.2rem;
+            margin: 0;
+            color: var(--primary-green);
+        }
+
+        .roadmap-tab.active h4 {
+            color: var(--bg-black);
+        }
+
+        .roadmap-tab p {
+            margin: 5px 0 0 0;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .roadmap-tab .tab-number {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--primary-green);
+            color: var(--bg-black);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 968px) {
+            .roadmap-container {
+                grid-template-columns: 1fr;
+            }
+
+            .roadmap-tabs {
+                flex-direction: row;
+                overflow-x: auto;
+            }
+
+            .roadmap-tab {
+                min-width: 150px;
+            }
+        }
+
+        /* Implementation */
+        .implementation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--card-black);
+            padding: 30px 0;
+            text-align: center;
+            border-top: 2px solid var(--primary-green);
+            margin-top: 60px;
+        }
+
+        footer p {
+            color: var(--text-gray);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .header-content {
+                justify-content: center;
+            }
+
+            .roadmap-container {
+                flex-direction: column;
+            }
+        }
+
+        /* Highlight class for emphasis */
+        .highlight {
+            color: var(--primary-green);
+            font-weight: bold;
+        }
+
+        .content-block {
+            margin-bottom: 20px;
+        }
+
+        .content-block h4 {
+            color: var(--primary-green);
+            margin-bottom: 10px;
+        }
+
+        /* Traffic Jam Comparison */
+        .traffic-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .traffic-scenario {
+            background: var(--card-black);
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-green);
+            text-align: center;
+        }
+
+        .traffic-scenario.bad {
+            border-color: #ff6b6b;
+        }
+
+        .traffic-scenario h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .traffic-scenario.bad h3 {
+            color: #ff6b6b;
+        }
+
+        .traffic-scenario.good h3 {
+            color: var(--primary-green);
+        }
+
+        .traffic-svg {
+            width: 100%;
+            max-width: 350px;
+            margin: 0 auto 20px;
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <span data-translate="logo">Smart Traffic Lights</span>
+            </div>
+            <div class="lang-switcher">
+                <button class="lang-btn active" onclick="changeLanguage('en')">EN</button>
+                <button class="lang-btn" onclick="changeLanguage('ru')">RU</button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <svg class="hero-illustration" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+                <!-- Background -->
+                <rect width="600" height="400" fill="#0a0a0a"/>
+
+                <!-- Road - Horizontal -->
+                <rect x="0" y="170" width="600" height="80" fill="#2a2a2a"/>
+                <rect x="0" y="208" width="600" height="4" fill="#404040"/>
+
+                <!-- Road - Vertical -->
+                <rect x="260" y="0" width="80" height="400" fill="#2a2a2a"/>
+                <rect x="298" y="0" width="4" height="400" fill="#404040"/>
+
+                <!-- Road markings - Horizontal -->
+                <line x1="0" y1="210" x2="260" y2="210" stroke="#ffcc00" stroke-width="3"
+                      stroke-dasharray="15,15"/>
+                <line x1="340" y1="210" x2="600" y2="210" stroke="#ffcc00" stroke-width="3"
+                      stroke-dasharray="15,15"/>
+
+                <!-- Road markings - Vertical -->
+                <line x1="300" y1="0" x2="300" y2="170" stroke="#ffcc00" stroke-width="3"
+                      stroke-dasharray="15,15"/>
+                <line x1="300" y1="250" x2="300" y2="400" stroke="#ffcc00" stroke-width="3"
+                      stroke-dasharray="15,15"/>
+
+                <!-- Crosswalk - Horizontal -->
+                <g opacity="0.6">
+                    <rect x="265" y="175" width="10" height="70" fill="#ffffff"/>
+                    <rect x="280" y="175" width="10" height="70" fill="#ffffff"/>
+                    <rect x="295" y="175" width="10" height="70" fill="#ffffff"/>
+                    <rect x="310" y="175" width="10" height="70" fill="#ffffff"/>
+                    <rect x="325" y="175" width="10" height="70" fill="#ffffff"/>
+                </g>
+
+                <!-- Traffic Light Posts -->
+                <!-- Top-left -->
+                <rect x="252" y="140" width="4" height="30" fill="#333"/>
+                <rect x="240" y="135" width="28" height="50" rx="4" fill="#1a1a1a" stroke="#00ff88"
+                      stroke-width="2"/>
+                <circle cx="254" cy="148" r="6" fill="#ff0000" opacity="0.3" id="light1-red"/>
+                <circle cx="254" cy="160" r="6" fill="#ffcc00" opacity="0.3" id="light1-yellow"/>
+                <circle cx="254" cy="172" r="6" fill="#00ff88" opacity="1" id="light1-green"/>
+
+                <!-- Top-right -->
+                <rect x="344" y="140" width="4" height="30" fill="#333"/>
+                <rect x="332" y="135" width="28" height="50" rx="4" fill="#1a1a1a" stroke="#00ff88"
+                      stroke-width="2"/>
+                <circle cx="346" cy="148" r="6" fill="#ff0000" opacity="1" id="light2-red"/>
+                <circle cx="346" cy="160" r="6" fill="#ffcc00" opacity="0.3" id="light2-yellow"/>
+                <circle cx="346" cy="172" r="6" fill="#00ff88" opacity="0.3" id="light2-green"/>
+
+                <!-- Buildings silhouette -->
+                <g opacity="0.3">
+                    <rect x="20" y="60" width="60" height="100" fill="#1a1a1a"/>
+                    <rect x="90" y="80" width="50" height="80" fill="#1a1a1a"/>
+                    <rect x="150" y="70" width="70" height="90" fill="#1a1a1a"/>
+
+                    <rect x="380" y="50" width="55" height="110" fill="#1a1a1a"/>
+                    <rect x="445" y="70" width="65" height="90" fill="#1a1a1a"/>
+                    <rect x="520" y="85" width="60" height="75" fill="#1a1a1a"/>
+                </g>
+
+                <!-- Cars on horizontal road -->
+                <!-- Car 1 (stopped - left side) -->
+                <g id="car-stopped-left">
+                    <rect x="80" y="185" width="50" height="28" rx="3" fill="#ff6b6b"/>
+                    <rect x="86" y="189" width="12" height="9" fill="#4a9eff" opacity="0.7"/>
+                    <rect x="102" y="189" width="12" height="9" fill="#4a9eff" opacity="0.7"/>
+                    <rect x="86" y="202" width="12" height="9" fill="#4a9eff" opacity="0.7"/>
+                    <rect x="102" y="202" width="12" height="9" fill="#4a9eff" opacity="0.7"/>
+                    <circle cx="90" cy="217" r="4" fill="#1a1a1a"/>
+                    <circle cx="120" cy="217" r="4" fill="#1a1a1a"/>
+                    <rect x="124" y="195" width="4" height="8" fill="#ffcc00" opacity="0.8"/>
+                </g>
+
+                <!-- Car 2 (behind car 1) -->
+                <g id="car-stopped-left-2">
+                    <rect x="20" y="185" width="50" height="28" rx="3" fill="#9b59b6"/>
+                    <rect x="26" y="189" width="12" height="9" fill="#4a9eff" opacity="0.7"/>
+                    <rect x="42" y="189" width="12" height="9" fill="#4a9eff" opacity="0.7"/>
+                    <circle cx="30" cy="217" r="4" fill="#1a1a1a"/>
+                    <circle cx="60" cy="217" r="4" fill="#1a1a1a"/>
+                </g>
+
+                <!-- Car 3 (moving - scroll based) -->
+                <g id="car-moving-scroll" class="scroll-animate-car">
+                    <rect x="360" y="185" width="50" height="28" rx="3" fill="#8b5cf6"/>
+                    <rect x="366" y="189" width="12" height="9" fill="#4a9eff" opacity="0.7"/>
+                    <rect x="382" y="189" width="12" height="9" fill="#4a9eff" opacity="0.7"/>
+                    <rect x="366" y="202" width="12" height="9" fill="#4a9eff" opacity="0.7"/>
+                    <rect x="382" y="202" width="12" height="9" fill="#4a9eff" opacity="0.7"/>
+                    <circle cx="370" cy="217" r="4" fill="#1a1a1a"/>
+                    <circle cx="400" cy="217" r="4" fill="#1a1a1a"/>
+                    <rect x="404" y="195" width="4" height="8" fill="#ffcc00" opacity="0.8"/>
+                </g>
+
+                <!-- Cars on vertical road -->
+                <!-- Car 4 (moving down - scroll based) -->
+                <g id="car-vertical-scroll" class="scroll-animate-car">
+                    <rect x="277" y="280" width="28" height="45" rx="3" fill="#3498db"/>
+                    <rect x="281" y="285" width="9" height="11" fill="#4a9eff" opacity="0.7"/>
+                    <rect x="292" y="285" width="9" height="11" fill="#4a9eff" opacity="0.7"/>
+                    <rect x="281" y="310" width="9" height="11" fill="#4a9eff" opacity="0.7"/>
+                    <rect x="292" y="310" width="9" height="11" fill="#4a9eff" opacity="0.7"/>
+                    <circle cx="282" cy="282" r="4" fill="#1a1a1a"/>
+                    <circle cx="298" cy="282" r="4" fill="#1a1a1a"/>
+                </g>
+
+                <!-- AI Control Center -->
+                <g transform="translate(470, 20)">
+                    <!-- Main panel -->
+                    <rect x="0" y="0" width="110" height="95" rx="8" fill="#1a1a1a" stroke="#00ff88"
+                          stroke-width="2.5"/>
+                    <text x="55" y="28" text-anchor="middle" fill="#00ff88" font-size="11" font-weight="bold">AI
+                        CONTROL
+                    </text>
+
+                    <!-- Mini display -->
+                    <rect x="8" y="45" width="94" height="40" rx="3" fill="#0a0a0a" stroke="#00ff88"
+                          stroke-width="1.5"/>
+
+                    <!-- Graph lines with animation -->
+                    <polyline points="12,68 22,58 32,62 42,52 52,58 62,48 72,52 82,45 92,50" stroke="#00ff88"
+                              stroke-width="2" fill="none" opacity="0.8"/>
+                    <polyline points="12,72 22,65 32,70 42,62 52,68 62,58 72,62 82,55 92,60" stroke="#3498db"
+                              stroke-width="2" fill="none" opacity="0.6"/>
+
+                    <!-- Status bar -->
+                    <rect x="12" y="78" width="80" height="2" rx="1" fill="#00ff88" opacity="0.3"/>
+                    <rect x="12" y="78" width="55" height="2" rx="1" fill="#00ff88">
+                        <animate attributeName="width" values="20;80;20" dur="3s" repeatCount="indefinite"/>
+                    </rect>
+                </g>
+
+                <!-- Connection lines from AI to traffic lights -->
+                <line x1="480" y1="115" x2="360" y2="160" stroke="#00ff88" stroke-width="1" stroke-dasharray="3,3"
+                      opacity="0.5"/>
+                <line x1="480" y1="115" x2="268" y2="160" stroke="#00ff88" stroke-width="1" stroke-dasharray="3,3"
+                      opacity="0.5"/>
+            </svg>
+            <h1 data-translate="heroTitle">AI-Powered Intelligent Traffic Management System</h1>
+            <p data-translate="heroSubtitle">Transforming urban mobility through real-time adaptive traffic light
+                control</p>
+        </div>
+    </div>
+</div>
+
+<section id="problem-solution">
+    <div class="container">
+        <h2 class="section-title" data-translate="problemSolutionTitle">Problem & Solution</h2>
+
+        <div class="problem-solution">
+            <div class="card">
+                <svg class="card-icon no-filter" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="32" cy="32" r="28" fill="#ff6b6b" opacity="0.1"/>
+                    <path d="M32 4C16.536 4 4 16.536 4 32s12.536 28 28 28 28-12.536 28-28S47.464 4 32 4z"
+                          fill="none" stroke="#ff6b6b" stroke-width="3"/>
+                    <path d="M32 18v16" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/>
+                    <circle cx="32" cy="44" r="2.5" fill="#ff6b6b"/>
+                </svg>
+                <h3 data-translate="problemTitle">The Problem</h3>
+                <p data-translate="problemDesc">Modern traffic lights in most cities operate on fixed schedules and
+                    barely account for real road load. During rush hours, accidents, road closures, or mass events,
+                    roads behave differently, but traffic lights continue running the same cycle without considering
+                    current traffic conditions.</p>
+
+                <div class="content-block">
+                    <h4 data-translate="keyProblems">Key Issues:</h4>
+                    <ul>
+                        <li data-translate="problem1">Traffic lights have fixed timings that don't adapt to current
+                            road congestion
+                        </li>
+                        <li data-translate="problem2">During rush hours and emergencies (accidents, repairs, road
+                            closures), the system cannot quickly adapt
+                        </li>
+                        <li data-translate="problem3">Historical traffic data is underutilized for long-term road
+                            and city planning
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="content-block">
+                    <h4 data-translate="consequences">Consequences:</h4>
+                    <ul>
+                        <li data-translate="consequence1">Increased traffic jams and travel time</li>
+                        <li data-translate="consequence2">Higher fuel consumption and emissions</li>
+                        <li data-translate="consequence3">Elevated stress levels and accident risks</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <svg class="card-icon no-filter" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="32" cy="32" r="28" fill="#00ff88" opacity="0.1"/>
+                    <path d="M32 4C16.536 4 4 16.536 4 32s12.536 28 28 28 28-12.536 28-28S47.464 4 32 4z"
+                          fill="none" stroke="#00ff88" stroke-width="3"/>
+                    <path d="M20 32l8 8 16-16" stroke="#00ff88" stroke-width="4" fill="none" stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                </svg>
+                <h3 data-translate="solutionTitle">Our Solution</h3>
+                <p data-translate="solutionDesc">We propose an intelligent AI-based traffic light management system
+                    that evaluates traffic at intersections and nearby traffic lights in real-time, suggesting
+                    optimal timing adjustments. The AI analyzes queue lengths, flow intensity, and congestion on
+                    neighboring streets to adapt signal durations and synchronize multiple intersections.</p>
+
+                <div class="content-block">
+                    <h4 data-translate="keyFeatures">Key Features:</h4>
+                    <ul>
+                        <li data-translate="feature1">Real-time data collection from cameras and sensors</li>
+                        <li data-translate="feature2">Dynamic traffic light timing adjustments</li>
+                        <li data-translate="feature3">Multi-intersection coordination for "green waves"</li>
+                        <li data-translate="feature4">Recommendation system for operator approval</li>
+                        <li data-translate="feature5">Long-term planning using accumulated traffic data</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="traffic-comparison">
+    <div class="container">
+        <h2 class="section-title" data-translate="comparisonTitle">Before & After</h2>
+
+        <div class="traffic-comparison">
+            <div class="traffic-scenario bad">
+                <h3 data-translate="beforeTitle">Without AI System</h3>
+                <svg class="traffic-svg" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Road -->
+                    <rect x="0" y="80" width="300" height="40" fill="#2a2a2a"/>
+                    <line x1="0" y1="100" x2="300" y2="100" stroke="#ffcc00" stroke-width="2"
+                          stroke-dasharray="8,8"/>
+
+                    <!-- Traffic Light (Red) -->
+                    <rect x="260" y="50" width="15" height="35" rx="2" fill="#1a1a1a" stroke="#ff6b6b"
+                          stroke-width="1.5"/>
+                    <circle cx="267.5" cy="60" r="4" fill="#ff0000" opacity="1"/>
+                    <circle cx="267.5" cy="70" r="4" fill="#ffcc00" opacity="0.3"/>
+                    <circle cx="267.5" cy="80" r="4" fill="#00ff88" opacity="0.3"/>
+
+                    <!-- Queue of cars (Traffic jam) -->
+                    <!-- Car 1 -->
+                    <rect x="200" y="86" width="35" height="20" rx="2" fill="#ff6b6b"/>
+                    <rect x="204" y="89" width="9" height="7" fill="#4a9eff" opacity="0.5"/>
+                    <rect x="215" y="89" width="9" height="7" fill="#4a9eff" opacity="0.5"/>
+                    <circle cx="208" cy="107" r="3" fill="#1a1a1a"/>
+                    <circle cx="227" cy="107" r="3" fill="#1a1a1a"/>
+
+                    <!-- Car 2 -->
+                    <rect x="155" y="86" width="35" height="20" rx="2" fill="#9b59b6"/>
+                    <rect x="159" y="89" width="9" height="7" fill="#4a9eff" opacity="0.5"/>
+                    <rect x="170" y="89" width="9" height="7" fill="#4a9eff" opacity="0.5"/>
+                    <circle cx="163" cy="107" r="3" fill="#1a1a1a"/>
+                    <circle cx="182" cy="107" r="3" fill="#1a1a1a"/>
+
+                    <!-- Car 3 -->
+                    <rect x="110" y="86" width="35" height="20" rx="2" fill="#3498db"/>
+                    <rect x="114" y="89" width="9" height="7" fill="#4a9eff" opacity="0.5"/>
+                    <rect x="125" y="89" width="9" height="7" fill="#4a9eff" opacity="0.5"/>
+                    <circle cx="118" cy="107" r="3" fill="#1a1a1a"/>
+                    <circle cx="137" cy="107" r="3" fill="#1a1a1a"/>
+
+                    <!-- Car 4 -->
+                    <rect x="65" y="86" width="35" height="20" rx="2" fill="#e74c3c"/>
+                    <rect x="69" y="89" width="9" height="7" fill="#4a9eff" opacity="0.5"/>
+                    <rect x="80" y="89" width="9" height="7" fill="#4a9eff" opacity="0.5"/>
+                    <circle cx="73" cy="107" r="3" fill="#1a1a1a"/>
+                    <circle cx="92" cy="107" r="3" fill="#1a1a1a"/>
+
+                    <!-- Car 5 -->
+                    <rect x="20" y="86" width="35" height="20" rx="2" fill="#f39c12"/>
+                    <rect x="24" y="89" width="9" height="7" fill="#4a9eff" opacity="0.5"/>
+                    <rect x="35" y="89" width="9" height="7" fill="#4a9eff" opacity="0.5"/>
+                    <circle cx="28" cy="107" r="3" fill="#1a1a1a"/>
+                    <circle cx="47" cy="107" r="3" fill="#1a1a1a"/>
+
+                    <!-- Frustration indicators -->
+                    <text x="150" y="50" text-anchor="middle" fill="#ff6b6b" font-size="24"
+                          font-weight="bold">⚠
+                    </text>
+                    <text x="150" y="160" text-anchor="middle" fill="#ff6b6b" font-size="14"
+                          data-translate="longWaitTimes">Long Wait Times
+                    </text>
+                    <text x="150" y="180" text-anchor="middle" fill="#ff6b6b" font-size="14"
+                          data-translate="wastedFuel">Wasted Fuel
+                    </text>
+                </svg>
+                <p data-translate="beforeDesc">Fixed timing creates unnecessary traffic jams, longer wait times, and
+                    increased emissions.</p>
+            </div>
+
+            <div class="traffic-scenario good">
+                <h3 data-translate="afterTitle">With AI System</h3>
+                <svg class="traffic-svg" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Road -->
+                    <rect x="0" y="80" width="300" height="40" fill="#2a2a2a"/>
+                    <line x1="0" y1="100" x2="300" y2="100" stroke="#ffcc00" stroke-width="2"
+                          stroke-dasharray="8,8"/>
+
+                    <!-- Traffic Light (Green) -->
+                    <rect x="260" y="50" width="15" height="35" rx="2" fill="#1a1a1a" stroke="#00ff88"
+                          stroke-width="1.5"/>
+                    <circle cx="267.5" cy="60" r="4" fill="#ff0000" opacity="0.3"/>
+                    <circle cx="267.5" cy="70" r="4" fill="#ffcc00" opacity="0.3"/>
+                    <circle cx="267.5" cy="80" r="4" fill="#00ff88" opacity="1"/>
+
+                    <!-- Cars with spacing (Free flow) -->
+                    <!-- Car 1 -->
+                    <rect x="180" y="86" width="35" height="20" rx="2" fill="#00ff88"/>
+                    <rect x="184" y="89" width="9" height="7" fill="#4a9eff" opacity="0.7"/>
+                    <rect x="195" y="89" width="9" height="7" fill="#4a9eff" opacity="0.7"/>
+                    <circle cx="188" cy="107" r="3" fill="#1a1a1a"/>
+                    <circle cx="207" cy="107" r="3" fill="#1a1a1a"/>
+                    <path d="M 216 93 L 222 93" stroke="#00ff88" stroke-width="1.5" opacity="0.7"/>
+                    <path d="M 216 97 L 222 97" stroke="#00ff88" stroke-width="1.5" opacity="0.7"/>
+
+                    <!-- Car 2 -->
+                    <rect x="100" y="86" width="35" height="20" rx="2" fill="#3498db"/>
+                    <rect x="104" y="89" width="9" height="7" fill="#4a9eff" opacity="0.7"/>
+                    <rect x="115" y="89" width="9" height="7" fill="#4a9eff" opacity="0.7"/>
+                    <circle cx="108" cy="107" r="3" fill="#1a1a1a"/>
+                    <circle cx="127" cy="107" r="3" fill="#1a1a1a"/>
+                    <path d="M 136 93 L 142 93" stroke="#00ff88" stroke-width="1.5" opacity="0.7"/>
+                    <path d="M 136 97 L 142 97" stroke="#00ff88" stroke-width="1.5" opacity="0.7"/>
+
+                    <!-- Car 3 -->
+                    <rect x="20" y="86" width="35" height="20" rx="2" fill="#9b59b6"/>
+                    <rect x="24" y="89" width="9" height="7" fill="#4a9eff" opacity="0.7"/>
+                    <rect x="35" y="89" width="9" height="7" fill="#4a9eff" opacity="0.7"/>
+                    <circle cx="28" cy="107" r="3" fill="#1a1a1a"/>
+                    <circle cx="47" cy="107" r="3" fill="#1a1a1a"/>
+                    <path d="M 56 93 L 62 93" stroke="#00ff88" stroke-width="1.5" opacity="0.7"/>
+                    <path d="M 56 97 L 62 97" stroke="#00ff88" stroke-width="1.5" opacity="0.7"/>
+
+                    <g transform="translate(150,40) scale(0.71) translate(-32,-32)">
+                        <!-- Background circle -->
+
+                        <!-- Outer ring -->
+                        <path d="M32 4C16.536 4 4 16.536 4 32s12.536 28 28 28 28-12.536 28-28S47.464 4 32 4z"
+                              fill="none" stroke="#00ff88" stroke-width="3"/>
+
+                        <!-- Brain outline -->
+                        <path
+                                d="M 20 26 Q 20 18 26 18 Q 30 18 32 22 Q 34 18 38 18 Q 44 18 44 26 Q 44 30 42 32 Q 44 34 44 38 Q 44 46 38 46 Q 34 46 32 42 Q 30 46 26 46 Q 20 46 20 38 Q 20 34 22 32 Q 20 30 20 26 Z"
+                                fill="none" stroke="#00ff88" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round"/>
+
+                        <!-- Neural connections -->
+                        <circle cx="24" cy="24" r="2" fill="#00ff88"/>
+                        <circle cx="32" cy="20" r="2" fill="#00ff88"/>
+                        <circle cx="40" cy="24" r="2" fill="#00ff88"/>
+                        <circle cx="26" cy="32" r="2" fill="#00ff88"/>
+                        <circle cx="38" cy="32" r="2" fill="#00ff88"/>
+                        <circle cx="32" cy="36" r="2" fill="#00ff88"/>
+                        <circle cx="24" cy="40" r="2" fill="#00ff88"/>
+                        <circle cx="40" cy="40" r="2" fill="#00ff88"/>
+
+                        <!-- Connection lines -->
+                        <line x1="24" y1="24" x2="26" y2="32" stroke="#00ff88" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="32" y1="20" x2="32" y2="36" stroke="#00ff88" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="40" y1="24" x2="38" y2="32" stroke="#00ff88" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="26" y1="32" x2="32" y2="36" stroke="#00ff88" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="38" y1="32" x2="32" y2="36" stroke="#00ff88" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="24" y1="40" x2="32" y2="36" stroke="#00ff88" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="40" y1="40" x2="32" y2="36" stroke="#00ff88" stroke-width="1.5" opacity="0.6"/>
+                    </g>
+
+
+                    <!-- Success indicators -->
+                    <text x="150" y="160" text-anchor="middle" fill="#00ff88" font-size="14"
+                          data-translate="optimizedFlow">Optimized Flow
+                    </text>
+                    <text x="150" y="180" text-anchor="middle" fill="#00ff88" font-size="14"
+                          data-translate="reducedWait">Reduced Wait Time
+                    </text>
+                </svg>
+                <p data-translate="afterDesc">AI adapts timing in real-time, ensuring smooth traffic flow and
+                    minimal waiting.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="team">
+    <div class="container">
+        <h2 class="section-title" data-translate="teamTitle">Our Team</h2>
+
+        <div class="team-grid">
+            <div class="team-member">
+                <div class="team-avatar">
+                    <img src="/img/abdulaziz.jpg" alt="Abdulaziz Zakirov">
+                </div>
+                <h4>Abdulaziz Zakirov</h4>
+                <div class="role" data-translate="role1">AI Engineer</div>
+                <div class="skills" data-translate="skills1">Lead AI Developer, Machine Learning, Deep Learning
+                </div>
+                <div class="stack">Python, TensorFlow, PyTorch</div>
+            </div>
+
+            <div class="team-member">
+                <div class="team-avatar">
+                    <img src="/img/malika.jpg" alt="Malika Rustamova">
+                </div>
+                <h4>Malika Rustamova</h4>
+                <div class="role" data-translate="role2">Data Analyst</div>
+                <div class="skills" data-translate="skills2">Data Analysis & Visualization, Database Management,
+                    Reporting & Dashboards
+                </div>
+                <div class="stack">SQL, Power BI, Python</div>
+            </div>
+
+            <div class="team-member">
+                <div class="team-avatar">
+                    <img src="/img/albina.jpg" alt="Albina Pavlova">
+                </div>
+                <h4>Albina Pavlova</h4>
+                <div class="role" data-translate="role3">Project Manager</div>
+                <div class="skills" data-translate="skills3">Product & Project Management, Agile/Scrum, Requirements
+                    Analysis
+                </div>
+                <div class="stack">Jira, Confluence, Notion, Figma</div>
+            </div>
+
+            <div class="team-member">
+                <div class="team-avatar">
+                    <img src="/img/abdurauf.jpg" alt="Abdurauf Vakhobov">
+                </div>
+                <h4>Abdurauf Vakhobov</h4>
+                <div class="role" data-translate="role4">Backend & DevOps Engineer</div>
+                <div class="skills" data-translate="skills4">Backend Development, DevOps, AI Engineering</div>
+                <div class="stack">Java, Python, PostgreSQL, Docker</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="why-us">
+    <div class="container">
+        <h2 class="section-title" data-translate="whyUsTitle">Why Our Team Can Solve This</h2>
+
+        <div class="problem-solution">
+            <div class="card">
+                <p data-translate="whyUs1">We are graduates of <span class="highlight">Inha University</span>, where
+                    we gained a strong technical foundation in computer science, algorithms, networks, and systems
+                    engineering.</p>
+            </div>
+
+            <div class="card">
+                <p data-translate="whyUs2">We have <span class="highlight">hands-on experience with sensor
+                            data</span> – collecting, cleaning, and interpreting signals from real devices, which
+                    directly relates to processing traffic data.</p>
+            </div>
+
+            <div class="card">
+                <p data-translate="whyUs3">Our final university project focused on <span
+                        class="highlight">robotics</span>, where we developed motion logic and decision-making
+                    systems. This experience helps us build real-time systems similar to traffic flow management.
+                </p>
+            </div>
+
+            <div class="card">
+                <p data-translate="whyUs4">We have experience with <span class="highlight">rapid prototyping and
+                            external API integration</span>, allowing us to quickly build working solutions for the
+                    hackathon.</p>
+            </div>
+
+            <div class="card">
+                <p data-translate="whyUs5">We're not just developers – we are <span class="highlight">city
+                            users</span>: drivers, pedestrians, passengers. Every day we personally face traffic jams,
+                    inefficient traffic lights, and unpredictable traffic. For us, this is not an abstract technical
+                    task, but a real problem we want to solve for ourselves and everyone around us.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="roadmap">
+    <div class="container">
+        <h2 class="section-title" data-translate="roadmapTitle">Roadmap & Current Stage</h2>
+
+        <div class="roadmap-container">
+            <div class="roadmap-content" id="roadmap-content">
+                <h3 id="roadmap-stage-title">IDEA</h3>
+                <ul id="roadmap-stage-content">
+                    <li data-translate="ideaItem1">Analysis of current intersection problems and fixed timings</li>
+                    <li data-translate="ideaItem2">Definition of key KPIs (waiting time, queue length, throughput)
+                    </li>
+                </ul>
+            </div>
+
+            <div class="roadmap-tabs">
+                <div class="roadmap-tab" onclick="switchRoadmapTab(0)" data-stage="idea">
+                    <span class="tab-number">1</span>
+                    <h4 data-translate="stage1">IDEA</h4>
+                    <p data-translate="stage1Desc">Problem analysis</p>
+                </div>
+
+                <div class="roadmap-tab active" onclick="switchRoadmapTab(1)" data-stage="prototype">
+                    <span class="tab-number">2</span>
+                    <h4 data-translate="stage2">PROTOTYPE</h4>
+                    <p data-translate="stage2Desc">Algorithm testing</p>
+                </div>
+
+                <div class="roadmap-tab" onclick="switchRoadmapTab(2)" data-stage="mvp">
+                    <span class="tab-number">3</span>
+                    <h4 data-translate="stage3">MVP</h4>
+                    <p data-translate="stage3Desc">Operator dashboard</p>
+                </div>
+
+                <div class="roadmap-tab" onclick="switchRoadmapTab(3)" data-stage="launched">
+                    <span class="tab-number">4</span>
+                    <h4 data-translate="stage4">LAUNCHED</h4>
+                    <p data-translate="stage4Desc">Full deployment</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="implementation">
+    <div class="container">
+        <h2 class="section-title" data-translate="implementationTitle">How We Plan to Solve It</h2>
+
+        <div class="implementation-grid">
+            <div class="card">
+                <svg class="card-icon no-filter" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Background circle -->
+                    <circle cx="32" cy="32" r="28" fill="#00ff88" opacity="0.1"/>
+                    <path d="M32 4C16.536 4 4 16.536 4 32s12.536 28 28 28 28-12.536 28-28S47.464 4 32 4z"
+                          fill="none" stroke="#00ff88" stroke-width="3"/>
+
+                    <!-- Bar chart -->
+                    <rect x="14" y="36" width="6" height="14" rx="1" fill="#00ff88" opacity="0.8"/>
+                    <rect x="23" y="28" width="6" height="22" rx="1" fill="#00ff88"/>
+                    <rect x="32" y="32" width="6" height="18" rx="1" fill="#00ff88" opacity="0.8"/>
+                    <rect x="41" y="22" width="6" height="28" rx="1" fill="#00ff88"/>
+
+                    <!-- Trend arrow -->
+                    <path d="M 12 20 L 28 12 L 38 16 L 52 8" stroke="#00ff88" stroke-width="2.5" fill="none"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                    <polyline points="48,8 52,8 52,12" fill="none" stroke="#00ff88" stroke-width="2.5"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h3 data-translate="implTitle1">Implementation Steps</h3>
+                <ul>
+                    <li data-translate="impl1">Market research of existing intelligent traffic systems</li>
+                    <li data-translate="impl2">Data requirements analysis (vehicle count, queue length, flow
+                        intensity)
+                    </li>
+                    <li data-translate="impl3">Choose data source: traffic API or video stream processing</li>
+                    <li data-translate="impl4">Develop service for regular API polling and data processing</li>
+                    <li data-translate="impl5">Build decision-making logic for traffic light timing recommendations
+                    </li>
+                    <li data-translate="impl6">Create MVP operator dashboard</li>
+                    <li data-translate="impl7">Prepare demo scenario and presentation</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <svg class="card-icon no-filter" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Background circle -->
+                    <circle cx="32" cy="32" r="28" fill="#00ff88" opacity="0.1"/>
+                    <path d="M32 4C16.536 4 4 16.536 4 32s12.536 28 28 28 28-12.536 28-28S47.464 4 32 4z"
+                          fill="none" stroke="#00ff88" stroke-width="3"/>
+
+                    <!-- Code brackets -->
+                    <path d="M 20 18 L 14 24 L 14 40 L 20 46" stroke="#00ff88" stroke-width="3" fill="none"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M 44 18 L 50 24 L 50 40 L 44 46" stroke="#00ff88" stroke-width="3" fill="none"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+
+                    <!-- Code lines -->
+                    <line x1="24" y1="26" x2="34" y2="26" stroke="#00ff88" stroke-width="2.5"
+                          stroke-linecap="round"/>
+                    <line x1="28" y1="32" x2="40" y2="32" stroke="#00ff88" stroke-width="2.5"
+                          stroke-linecap="round"/>
+                    <line x1="24" y1="38" x2="36" y2="38" stroke="#00ff88" stroke-width="2.5"
+                          stroke-linecap="round"/>
+                </svg>
+                <h3 data-translate="implTitle2">Technologies</h3>
+                <ul>
+                    <li><span class="highlight">Python</span> <span data-translate="tech1">– Backend, API
+                                integration, recommendation logic, REST API (FastAPI/Flask)</span></li>
+                    <li><span class="highlight">Java</span> <span data-translate="tech2">– Microservices
+                                architecture and external system integration</span></li>
+                    <li><span class="highlight">PostgreSQL</span> <span data-translate="tech3">– Historical data
+                                storage</span></li>
+                    <li><span class="highlight">Docker</span> <span data-translate="tech4">– Service
+                                containerization</span></li>
+                    <li><span class="highlight">No-code platforms</span> <span data-translate="tech5">– Rapid
+                                operator dashboard prototyping</span></li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <svg class="card-icon no-filter" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Background circle -->
+                    <circle cx="32" cy="32" r="28" fill="#00ff88" opacity="0.1"/>
+                    <path d="M32 4C16.536 4 4 16.536 4 32s12.536 28 28 28 28-12.536 28-28S47.464 4 32 4z"
+                          fill="none" stroke="#00ff88" stroke-width="3"/>
+
+                    <!-- Brain outline -->
+                    <path
+                            d="M 20 26 Q 20 18 26 18 Q 30 18 32 22 Q 34 18 38 18 Q 44 18 44 26 Q 44 30 42 32 Q 44 34 44 38 Q 44 46 38 46 Q 34 46 32 42 Q 30 46 26 46 Q 20 46 20 38 Q 20 34 22 32 Q 20 30 20 26 Z"
+                            fill="none" stroke="#00ff88" stroke-width="2.5" stroke-linecap="round"
+                            stroke-linejoin="round"/>
+
+                    <!-- Neural connections -->
+                    <circle cx="24" cy="24" r="2" fill="#00ff88"/>
+                    <circle cx="32" cy="20" r="2" fill="#00ff88"/>
+                    <circle cx="40" cy="24" r="2" fill="#00ff88"/>
+                    <circle cx="26" cy="32" r="2" fill="#00ff88"/>
+                    <circle cx="38" cy="32" r="2" fill="#00ff88"/>
+                    <circle cx="32" cy="36" r="2" fill="#00ff88"/>
+                    <circle cx="24" cy="40" r="2" fill="#00ff88"/>
+                    <circle cx="40" cy="40" r="2" fill="#00ff88"/>
+
+                    <!-- Connection lines -->
+                    <line x1="24" y1="24" x2="26" y2="32" stroke="#00ff88" stroke-width="1.5" opacity="0.6"/>
+                    <line x1="32" y1="20" x2="32" y2="36" stroke="#00ff88" stroke-width="1.5" opacity="0.6"/>
+                    <line x1="40" y1="24" x2="38" y2="32" stroke="#00ff88" stroke-width="1.5" opacity="0.6"/>
+                    <line x1="26" y1="32" x2="32" y2="36" stroke="#00ff88" stroke-width="1.5" opacity="0.6"/>
+                    <line x1="38" y1="32" x2="32" y2="36" stroke="#00ff88" stroke-width="1.5" opacity="0.6"/>
+                    <line x1="24" y1="40" x2="32" y2="36" stroke="#00ff88" stroke-width="1.5" opacity="0.6"/>
+                    <line x1="40" y1="40" x2="32" y2="36" stroke="#00ff88" stroke-width="1.5" opacity="0.6"/>
+                </svg>
+                <h3 data-translate="implTitle3">AI Technologies</h3>
+                <ul>
+                    <li data-translate="ai1">External ML/AI services (e.g., Yandex API) for traffic analysis</li>
+                    <li data-translate="ai2">Classical ML algorithms (regression, boosting) for timing calculations
+                    </li>
+                    <li data-translate="ai3">Multi-intersection coordination algorithms</li>
+                    <li data-translate="ai4">Optional: LLM models for generating human-readable explanations</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <p data-translate="footer">AI500 Hackathon 2024 | Smart Traffic Lights Team</p>
+    </div>
+</footer>
+
+<script>
+    const translations = {
+        en: {
+            optimizedFlow: "Optimized Flow",
+            reducedWait: "Reduced Wait Time",
+            logo: "Smart Traffic Lights",
+            heroTitle: "AI-Powered Intelligent Traffic Management System",
+            heroSubtitle: "Transforming urban mobility through real-time adaptive traffic light control",
+            problemSolutionTitle: "Problem & Solution",
+            problemTitle: "The Problem",
+            problemDesc: "Modern traffic lights in most cities operate on fixed schedules and barely account for real road load. During rush hours, accidents, road closures, or mass events, roads behave differently, but traffic lights continue running the same cycle without considering current traffic conditions.",
+            keyProblems: "Key Issues:",
+            problem1: "Traffic lights have fixed timings that don't adapt to current road congestion",
+            problem2: "During rush hours and emergencies (accidents, repairs, road closures), the system cannot quickly adapt",
+            problem3: "Historical traffic data is underutilized for long-term road and city planning",
+            consequences: "Consequences:",
+            consequence1: "Increased traffic jams and travel time",
+            consequence2: "Higher fuel consumption and emissions",
+            consequence3: "Elevated stress levels and accident risks",
+            solutionTitle: "Our Solution",
+            solutionDesc: "We propose an intelligent AI-based traffic light management system that evaluates traffic at intersections and nearby traffic lights in real-time, suggesting optimal timing adjustments. The AI analyzes queue lengths, flow intensity, and congestion on neighboring streets to adapt signal durations and synchronize multiple intersections.",
+            keyFeatures: "Key Features:",
+            feature1: "Real-time data collection from cameras and sensors",
+            feature2: "Dynamic traffic light timing adjustments",
+            feature3: "Multi-intersection coordination for 'green waves'",
+            feature4: "Recommendation system for operator approval",
+            feature5: "Long-term planning using accumulated traffic data",
+            comparisonTitle: "Before & After",
+            beforeTitle: "Without AI System",
+            longWaitTimes: "Long Wait Times",
+            wastedFuel: "Wasted Fuel",
+            beforeDesc: "Fixed timing creates unnecessary traffic jams, longer wait times, and increased emissions.",
+            afterTitle: "With AI System",
+            afterDesc: "AI adapts timing in real-time, ensuring smooth traffic flow and minimal waiting.",
+            teamTitle: "Our Team",
+            role1: "AI Engineer",
+            skills1: "Lead AI Developer, Machine Learning, Deep Learning",
+            role2: "Data Analyst",
+            skills2: "Data Analysis & Visualization, Database Management, Reporting & Dashboards",
+            role3: "Project Manager",
+            skills3: "Product & Project Management, Agile/Scrum, Requirements Analysis",
+            role4: "Backend & DevOps Engineer",
+            skills4: "Backend Development, DevOps, AI Engineering",
+            whyUsTitle: "Why Our Team Can Solve This",
+            whyUs1: "We are graduates of Inha University, where we gained a strong technical foundation in computer science, algorithms, networks, and systems engineering.",
+            whyUs2: "We have hands-on experience with sensor data – collecting, cleaning, and interpreting signals from real devices, which directly relates to processing traffic data.",
+            whyUs3: "Our final university project focused on robotics, where we developed motion logic and decision-making systems. This experience helps us build real-time systems similar to traffic flow management.",
+            whyUs4: "We have experience with rapid prototyping and external API integration, allowing us to quickly build working solutions for the hackathon.",
+            whyUs5: "We're not just developers – we are city users: drivers, pedestrians, passengers. Every day we personally face traffic jams, inefficient traffic lights, and unpredictable traffic. For us, this is not an abstract technical task, but a real problem we want to solve for ourselves and everyone around us.",
+            roadmapTitle: "Roadmap & Current Stage",
+            stage1: "IDEA",
+            stage1Desc: "Problem analysis and KPI definition",
+            stage2: "PROTOTYPE",
+            stage2Desc: "Basic data collection and algorithm testing",
+            stage3: "MVP",
+            stage3Desc: "Backend service and operator dashboard",
+            stage4: "LAUNCHED",
+            stage4Desc: "Real intersection deployment",
+            implementationTitle: "How We Plan to Solve It",
+            implTitle1: "Implementation Steps",
+            impl1: "Market research of existing intelligent traffic systems",
+            impl2: "Data requirements analysis (vehicle count, queue length, flow intensity)",
+            impl3: "Choose data source: traffic API or video stream processing",
+            impl4: "Develop service for regular API polling and data processing",
+            impl5: "Build decision-making logic for traffic light timing recommendations",
+            impl6: "Create MVP operator dashboard",
+            impl7: "Prepare demo scenario and presentation",
+            implTitle2: "Technologies",
+            tech1: "– Backend, API integration, recommendation logic, REST API (FastAPI/Flask)",
+            tech2: "– Microservices architecture and external system integration",
+            tech3: "– Historical data storage",
+            tech4: "– Service containerization",
+            tech5: "– Rapid operator dashboard prototyping",
+            implTitle3: "AI Technologies",
+            ai1: "External ML/AI services (e.g., Yandex API) for traffic analysis",
+            ai2: "Classical ML algorithms (regression, boosting) for timing calculations",
+            ai3: "Multi-intersection coordination algorithms",
+            ai4: "Optional: LLM models for generating human-readable explanations",
+            footer: "AI500 Hackathon 2024 | Muad'dib Team"
+        },
+        ru: {
+            optimizedFlow: "Оптимизированный поток машин",
+            reducedWait: "Меньшее время ожидания",
+            logo: "Умные Светофоры",
+            heroTitle: "Интеллектуальная система управления трафиком на базе ИИ",
+            heroSubtitle: "Трансформация городской мобильности через адаптивное управление светофорами в реальном времени",
+            problemSolutionTitle: "Проблема и Решение",
+            problemTitle: "Проблема",
+            problemDesc: "Современные светофоры в большинстве городов работают по фиксированным сценариям и почти не учитывают реальную нагрузку на дороги. В часы пик, при ДТП, перекрытиях или массовых мероприятиях дороги ведут себя по-разному, но светофоры продолжают «крутить» один и тот же цикл без учета нынешней нагрузки.",
+            keyProblems: "Ключевые проблемы:",
+            problem1: "Светофоры имеют строго заданные тайминги, которые не меняются в зависимости от текущей загруженности дороги",
+            problem2: "В часы пик и при нештатных ситуациях (ДТП, ремонт, перекрытие улиц) система не умеет быстро адаптироваться",
+            problem3: "Исторические данные о трафике используются недостаточно эффективно для планирования дорог и районов",
+            consequences: "Последствия проблемы:",
+            consequence1: "Растут пробки и время в пути",
+            consequence2: "Увеличиваются расход топлива и выбросы",
+            consequence3: "Повышается уровень стресса и риск аварий",
+            solutionTitle: "Наше Решение",
+            solutionDesc: "Мы предлагаем интеллектуальную систему управления светофорами на базе искусственного интеллекта, которая в режиме реального времени оценивает трафик на перекрестке и на ближайших светофорах, и на основе этих данных предлагает оптимальные изменения режимов.",
+            keyFeatures: "Ключевые элементы решения:",
+            feature1: "Сбор данных в реальном времени с камер и датчиков",
+            feature2: "Динамический пересчет таймингов красного/зелёного света",
+            feature3: "Координация группы светофоров для формирования «зеленых волн»",
+            feature4: "Режим системы рекомендаций для утверждения оператором",
+            feature5: "Долгосрочное планирование с использованием накопленных данных о трафике",
+            comparisonTitle: "До и После",
+            beforeTitle: "Без AI Системы",
+            longWaitTimes: "Бесполезная трата времени",
+            wastedFuel: "Большая трата топлива",
+            beforeDesc: "Фиксированные тайминги создают ненужные пробки, увеличивают время ожидания и выбросы.",
+            afterTitle: "С AI Системой",
+            afterDesc: "ИИ адаптирует тайминги в реальном времени, обеспечивая плавный транспортный поток и минимальное ожидание.",
+            teamTitle: "Наша Команда",
+            role1: "AI-инженер",
+            skills1: "Ведущий разработчик ИИ, машинное обучение, глубокое обучение",
+            role2: "Аналитик данных",
+            skills2: "Анализ данных и визуализация, работа с базами данных, построение отчетов и дашбордов",
+            role3: "Менеджер проекта",
+            skills3: "Управление продуктом и проектом, Agile/Scrum, постановка требований",
+            role4: "Бэкенд и DevOps инженер",
+            skills4: "Разработка бэкенда, DevOps, AI-инженерия",
+            whyUsTitle: "Почему наша команда способна решить эту задачу",
+            whyUs1: "Мы выпускники Inha University, где получили сильную техническую базу в компьютерных науках, алгоритмах, сетях и системной инженерии.",
+            whyUs2: "Мы работали с данными с датчиков: собирали, очищали и интерпретировали сигналы от реальных устройств – это напрямую связано с обработкой данных трафика.",
+            whyUs3: "Наш финальный проект был посвящён робототехнике, где мы разрабатывали логику движения и принятия решений. Этот опыт помогает нам строить системы реального времени, похожие на управление транспортными потоками.",
+            whyUs4: "Команда уже имеет практику быстрых прототипов и интеграции с внешними API, что позволит нам оперативно собрать рабочее решение для хакатона.",
+            whyUs5: "Мы не просто разработчики — мы такие же пользователи города: водители, пешеходы, пассажиры. Каждый день лично сталкиваемся с пробками, неэффективными светофорами и непредсказуемостью трафика. Поэтому для нас это не абстрактная техническая задача, а реальная проблема, которую хочется решить для себя и для всех вокруг.",
+            roadmapTitle: "Дорожная карта и текущий этап",
+            stage1: "ИДЕЯ",
+            stage1Desc: "Анализ проблем и определение KPI",
+            stage2: "ПРОТОТИП",
+            stage2Desc: "Базовый сбор данных и тестирование алгоритма",
+            stage3: "MVP",
+            stage3Desc: "Бэкенд-сервис и панель оператора",
+            stage4: "ЗАПУЩЕНО",
+            stage4Desc: "Подключение к реальным перекрёсткам",
+            implementationTitle: "Как мы планируем реализовать решение",
+            implTitle1: "Этапы реализации",
+            impl1: "Изучение рынка и существующих систем интеллектуального управления трафиком",
+            impl2: "Анализ требований к данным (количество машин, длина очереди, интенсивность)",
+            impl3: "Выбор источника данных: API трафика или обработка видеопотока",
+            impl4: "Разработка сервиса для регулярного опроса API и обработки данных",
+            impl5: "Построение логики принятия решений для рекомендаций по таймингам светофоров",
+            impl6: "Создание MVP-приложения (панель оператора)",
+            impl7: "Подготовка демо-сценария и презентации",
+            implTitle2: "Технологии",
+            tech1: "– Backend, интеграция API, логика рекомендаций, REST API (FastAPI/Flask)",
+            tech2: "– Микросервисная архитектура и интеграция с внешними системами",
+            tech3: "– Хранение исторических данных",
+            tech4: "– Контейнеризация сервиса",
+            tech5: "– Быстрое прототипирование панели оператора",
+            implTitle3: "ИИ-технологии",
+            ai1: "Внешние ML/ИИ-сервисы (например, API Яндекса) для анализа трафика",
+            ai2: "Классические ML-алгоритмы (регрессия, бустинг) для расчета таймингов",
+            ai3: "Алгоритмы координации нескольких перекрёстков",
+            ai4: "Опционально: LLM-модели для генерации человеко-понятных объяснений",
+            footer: "Хакатон AI500 2024 | Muad'dib Team"
+        },
+    };
+
+    let currentLang = 'en';
+
+    function changeLanguage(lang) {
+        currentLang = lang;
+
+        // Update active button
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        // Update all translated elements
+        document.querySelectorAll('[data-translate]').forEach(element => {
+            const key = element.getAttribute('data-translate');
+            if (translations[lang][key]) {
+                element.innerHTML = translations[lang][key];
+            }
+        });
+
+        // Update roadmap content
+        switchRoadmapTab(currentRoadmapIndex);
+    }
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({behavior: 'smooth'});
+            }
+        });
+    });
+
+    // Roadmap tab switching
+    const roadmapData = {
+        en: {
+            idea: {
+                title: "IDEA",
+                items: [
+                    "Analysis of current intersection problems and fixed timings",
+                    "Definition of key KPIs (waiting time, queue length, throughput)"
+                ]
+            },
+            prototype: {
+                title: "PROTOTYPE",
+                items: [
+                    "Collection of basic traffic data: number of vehicles, load by direction",
+                    "Connection to external data sources",
+                    "Development of simple heuristic logic (e.g., more cars → longer green light)",
+                    "Algorithm testing through simulation"
+                ]
+            },
+            mvp: {
+                title: "MVP",
+                items: [
+                    "Backend service for regular data collection and recommendation calculation",
+                    "Simple operator dashboard showing current traffic load and suggested timings",
+                    "Pilot test at a test intersection or limited urban area (e.g., suburban zone, Chirchik)",
+                    "Collection and analysis of initial performance metrics"
+                ]
+            },
+            launched: {
+                title: "LAUNCHED",
+                items: [
+                    "Integration with real intersections",
+                    "Algorithm improvement based on historical data",
+                    "Stable version, integration with city systems",
+                    "Collection of final metrics: reduced delays, shorter queues, efficiency evaluation"
+                ]
+            }
+        },
+        ru: {
+            idea: {
+                title: "ИДЕЯ",
+                items: [
+                    "Анализ текущих проблем перекрёстков и фиксированных таймингов",
+                    "Определение ключевых KPI (время ожидания, длина очередей, пропускная способность)"
+                ]
+            },
+            prototype: {
+                title: "ПРОТОТИП",
+                items: [
+                    "Сбор базовых данных о трафике: количество машин, загруженность по направлениям",
+                    "Подключение к внешним источникам данных",
+                    "Разработка простой эвристической логики (например, больше машин → больше зелёного света)",
+                    "Проверка работы алгоритма на симуляции"
+                ]
+            },
+            mvp: {
+                title: "MVP",
+                items: [
+                    "Backend-сервис для регулярного сбора данных и расчёта рекомендаций",
+                    "Простая панель оператора с отображением текущей загруженности и предложенных таймингов",
+                    "Пилот на тестовом перекрёстке или ограниченной городской зоне (пригородная зона, Чирчик, например)",
+                    "Сбор и анализ начальных метрик эффективности"
+                ]
+            },
+            launched: {
+                title: "ЗАПУЩЕНО",
+                items: [
+                    "Подключение системы к реальным перекрёсткам",
+                    "Улучшение алгоритма на основе истории данных",
+                    "Стабильная версия, интеграция с городскими системами",
+                    "Сбор финальных метрик: снижение задержек, уменьшение длины очередей, оценка эффективности"
+                ]
+            }
+        }
+    };
+
+    let currentRoadmapIndex = 1; // Start with PROTOTYPE
+
+    function switchRoadmapTab(index) {
+        const stages = ['idea', 'prototype', 'mvp', 'launched'];
+        const stage = stages[index];
+        currentRoadmapIndex = index;
+
+        // Update active tab
+        document.querySelectorAll('.roadmap-tab').forEach((tab, i) => {
+            tab.classList.toggle('active', i === index);
+        });
+
+        // Update content
+        const data = roadmapData[currentLang][stage];
+        document.getElementById('roadmap-stage-title').textContent = data.title;
+
+        const contentList = document.getElementById('roadmap-stage-content');
+        contentList.innerHTML = '';
+        data.items.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            contentList.appendChild(li);
+        });
+    }
+
+    // Initialize roadmap with PROTOTYPE stage
+    document.addEventListener('DOMContentLoaded', () => {
+        switchRoadmapTab(1);
+    });
+
+    // Scroll-based car animation
+    let lastScrollY = 0;
+    let carPositionHorizontal = 360;
+    let carPositionVertical = 280;
+
+    window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        const scrollDelta = scrollY - lastScrollY;
+
+        // Animate horizontal car
+        const carHorizontal = document.getElementById('car-moving-scroll');
+        if (carHorizontal) {
+            carPositionHorizontal += scrollDelta * 0.5;
+            if (carPositionHorizontal > 600) carPositionHorizontal = 340;
+            if (carPositionHorizontal < 340) carPositionHorizontal = 600;
+            carHorizontal.setAttribute('transform', `translate(${carPositionHorizontal - 360}, 0)`);
+        }
+
+        // Animate vertical car
+        const carVertical = document.getElementById('car-vertical-scroll');
+        if (carVertical) {
+            carPositionVertical += scrollDelta * 0.3;
+            if (carPositionVertical > 400) carPositionVertical = 250;
+            if (carPositionVertical < 250) carPositionVertical = 400;
+            carVertical.setAttribute('transform', `translate(0, ${carPositionVertical - 280})`);
+        }
+
+        lastScrollY = scrollY;
+    });
+</script>
+</body>
+
+</html>
