@@ -1,9 +1,8 @@
 name: Deployment workflow
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches:
-      - master
+      - main
 
 env:
   REGISTRY: ghcr.io
@@ -12,11 +11,6 @@ env:
 jobs:
   checkout-branch:
     runs-on: ubuntu-latest
-    if: |
-      github.event.pull_request.merged == true &&
-      github.event.pull_request.base.ref == 'master' &&
-      github.event.pull_request.head.ref == 'staging'
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
