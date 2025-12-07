@@ -46,6 +46,80 @@
                 height: 250px;
             }
         }
+
+        /* Demo Description Section */
+        #demo-description {
+            padding: 80px 0;
+            background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
+        }
+
+        .demo-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .demo-card {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #00ff88;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .demo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
+        }
+
+        .demo-card h3 {
+            color: #00ff88;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .demo-card p {
+            color: #b0b0b0;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .demo-card strong {
+            color: #00ff88;
+        }
+
+        .demo-card ul {
+            color: #b0b0b0;
+            list-style-position: inside;
+            padding-left: 0;
+            margin-top: 10px;
+        }
+
+        .demo-card ul li {
+            margin-bottom: 8px;
+            padding-left: 10px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #00ff88;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: #00ff88;
+        }
     </style>
 </head>
 <body>
@@ -75,6 +149,45 @@
                 referrerpolicy="strict-origin-when-cross-origin"
                 allowfullscreen>
         </iframe>
+    </div>
+</section>
+
+<section id="demo-description">
+    <div class="container">
+        <h2 class="section-title" data-translate="demoAboutTitle">About the Demo</h2>
+
+        <div class="demo-info-grid">
+            <div class="demo-card">
+                <h3 data-translate="demoWhatShownTitle">What is Shown in the Demo</h3>
+                <p data-translate="demoWhatShownDesc">The demo displays a simulated intersection with working traffic lights. Traffic is generated on the roads, and the system recalculates and updates the traffic light phase every 60 seconds. This demonstrates how the model responds to changes in traffic load.</p>
+            </div>
+
+            <div class="demo-card">
+                <h3 data-translate="demoProblemSolutionTitle">Problem & Solution Connection</h3>
+                <p data-translate="demoProblemSolutionDesc1">The problem is that most urban traffic lights operate on fixed schedules and don't account for real road conditions, leading to traffic jams.</p>
+                <p data-translate="demoProblemSolutionDesc2">Our solution is an intelligent traffic light management system that analyzes traffic parameters (vehicle count, queue length, flow intensity) and automatically suggests optimal timing adjustments.</p>
+            </div>
+
+            <div class="demo-card">
+                <h3 data-translate="demoTechTitle">Tech Stack & AI Solutions</h3>
+                <p><strong data-translate="demoTechStackLabel">Technologies:</strong> <span data-translate="demoTechStack">Java, Python, Docker, AWS EC2, JavaScript, React</span></p>
+                <p><strong data-translate="demoTechAILabel">AI Implementation:</strong> <span data-translate="demoTechAI">Built using Scikit-learn with Random Forest model</span></p>
+            </div>
+
+            <div class="demo-card">
+                <h3 data-translate="demoStatusTitle">Current Status & Next Steps</h3>
+                <p><strong data-translate="demoStatusLabel">Status:</strong> <span data-translate="demoStatusCurrent">Prototype - Single intersection simulation with adaptive phase switching logic</span></p>
+                <p><strong data-translate="demoNextStepsLabel">Next Steps:</strong></p>
+                <ul>
+                    <li data-translate="demoNextStep1">Expand simulation to multiple intersections</li>
+                    <li data-translate="demoNextStep2">Add more traffic parameters</li>
+                    <li data-translate="demoNextStep3">Test various ML/AI approaches</li>
+                    <li data-translate="demoNextStep4">Integrate real data from Yandex Maps</li>
+                    <li data-translate="demoNextStep5">MVP testing on real streets</li>
+                    <li data-translate="demoNextStep6">Collaborate with traffic authorities for real-world integration</li>
+                </ul>
+            </div>
+        </div>
     </div>
 </section>
 
