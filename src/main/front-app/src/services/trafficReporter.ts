@@ -30,11 +30,46 @@ export class TrafficReporter {
     for (let i = 0; i < config.intersectionCount; i++) {
       const intersectionId = `intersection_${i + 1}`;
 
+      // Get current light states
+      const nsLightId = `${intersectionId}_north_south`;
+      const ewLightId = `${intersectionId}_east_west`;
+
+      const nsState = intersectionStore.getLightState(intersectionId, 'north_south');
+      const ewState = intersectionStore.getLightState(intersectionId, 'east_west');
+
+      // Determine individual direction states based on the combined light states
+      // North and South follow north_south light
+      const currentStateNorth = nsState;
+      const currentStateSouth = nsState;
+      // East and West follow east_west light
+      const currentStateEast = ewState;
+      const currentStateWest = ewState;
+
+      // Get time in current state
+      const timeInStateNS = intersectionStore.getTimeInCurrentState(nsLightId);
+      const timeInStateEW = intersectionStore.getTimeInCurrentState(ewLightId);
+
       intersections[intersectionId] = {
         north: vehicleStore.countVehiclesByDirection(intersectionId, 'north'),
         south: vehicleStore.countVehiclesByDirection(intersectionId, 'south'),
         east: vehicleStore.countVehiclesByDirection(intersectionId, 'east'),
         west: vehicleStore.countVehiclesByDirection(intersectionId, 'west'),
+        lanes_north: 1,
+        lanes_south: 1,
+        lanes_east: 1,
+        lanes_west: 1,
+        has_opposite: 1,
+        has_left: 1,
+        has_right: 1,
+        current_state_north: currentStateNorth,
+        current_state_south: currentStateSouth,
+        current_state_east: currentStateEast,
+        current_state_west: currentStateWest,
+        time_in_state_north: timeInStateNS,
+        time_in_state_south: timeInStateNS,
+        time_in_state_east: timeInStateEW,
+        time_in_state_west: timeInStateEW,
+        cycle: 60,
       };
     }
 
@@ -55,6 +90,9 @@ export class TrafficReporter {
           timings.yellow
         );
       }
+
+      // Update last update timestamp
+      config.setLastUpdateTimestamp(Date.now());
     } catch (error) {
       console.error('Failed to update traffic timings:', error);
     }

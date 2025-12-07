@@ -2,18 +2,20 @@ import { useState, useEffect } from 'react';
 import { useConfigStore } from '../../stores/configStore';
 
 export function StatusBar() {
-  const [lastUpdate, setLastUpdate] = useState(0);
-  const [nextUpdate, setNextUpdate] = useState(0);
+  const [currentTime, setCurrentTime] = useState(Date.now());
   const updateInterval = useConfigStore((s) => s.updateIntervalSeconds);
+  const lastUpdateTimestamp = useConfigStore((s) => s.lastUpdateTimestamp);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setLastUpdate((prev) => prev + 1);
-      setNextUpdate(updateInterval - (lastUpdate % updateInterval));
+      setCurrentTime(Date.now());
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [lastUpdate, updateInterval]);
+  }, []);
+
+  const lastUpdate = Math.floor((currentTime - lastUpdateTimestamp) / 1000);
+  const nextUpdate = Math.max(0, updateInterval - lastUpdate);
 
   return (
     <div style={{

@@ -122,16 +122,22 @@ export function ControlPanel() {
             <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.25rem' }}>
               North-South
             </div>
-            <div style={{ fontSize: '1.125rem', fontWeight: 600, color: '#333' }}>
-              Green: {nsLight?.greenDuration || 30}s  Yellow: {nsLight?.yellowDuration || 5}s
+            <div style={{ fontSize: '1rem', fontWeight: 600, color: '#10b981' }}>
+              Green: {nsLight?.greenDuration || 30}s
+            </div>
+            <div style={{ fontSize: '1rem', fontWeight: 600, color: '#ef4444' }}>
+              Red: {ewLight?.greenDuration || 30}s
             </div>
           </div>
           <div>
             <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.25rem' }}>
               East-West
             </div>
-            <div style={{ fontSize: '1.125rem', fontWeight: 600, color: '#333' }}>
-              Green: {ewLight?.greenDuration || 30}s  Yellow: {ewLight?.yellowDuration || 5}s
+            <div style={{ fontSize: '1rem', fontWeight: 600, color: '#10b981' }}>
+              Green: {ewLight?.greenDuration || 30}s
+            </div>
+            <div style={{ fontSize: '1rem', fontWeight: 600, color: '#ef4444' }}>
+              Red: {nsLight?.greenDuration || 30}s
             </div>
           </div>
         </div>
