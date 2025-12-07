@@ -12,4 +12,4 @@ chat:
 ml:
   python:
     service:
-      url: ${ML_PYTHON_SERVICE_URL:http://localhost:5000}
+      url: ${ML_PYTHON_SERVICE_URL:http://16.171.62.159:5000}

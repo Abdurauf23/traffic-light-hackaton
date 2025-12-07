@@ -5,18 +5,18 @@ import { TrafficUpdateRequest } from '../types';
 import { trafficAPIClient } from './apiClient';
 
 export class TrafficReporter {
-  private lastUpdateTime = 0;
-
   async reportIfNeeded(): Promise<void> {
     const config = useConfigStore.getState();
     const now = Date.now();
     const intervalMs = config.updateIntervalSeconds * 1000;
 
-    if (now - this.lastUpdateTime < intervalMs) {
+    // Use config store timestamp as single source of truth
+    if (now - config.lastUpdateTimestamp < intervalMs) {
       return;
     }
 
-    this.lastUpdateTime = now;
+    // Update timestamp before sending to prevent duplicate sends
+    config.setLastUpdateTimestamp(now);
     await this.sendUpdate();
   }
 
@@ -90,11 +90,11 @@ export class TrafficReporter {
           timings.yellow
         );
       }
-
-      // Update last update timestamp
-      config.setLastUpdateTimestamp(Date.now());
     } catch (error) {
       console.error('Failed to update traffic timings:', error);
+      // On error, set timestamp to allow retry in 30 seconds
+      const config = useConfigStore.getState();
+      config.setLastUpdateTimestamp(Date.now() - (config.updateIntervalSeconds * 1000 / 2));
     }
   }
 }
