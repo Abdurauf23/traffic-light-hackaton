@@ -4,15 +4,18 @@ import { PHYSICS } from '../constants/physics';
 
 interface IntersectionState {
   lights: TrafficLight[];
+  lightStateChangeTimes: Map<string, number>;
   initializeIntersections: (count: number) => void;
   updateLightState: (id: string, state: 'red' | 'yellow' | 'green') => void;
   updateLightDurations: (intersectionId: string, northSouthGreen: number, eastWestGreen: number, yellow: number) => void;
   getLightsByIntersection: (intersectionId: string) => TrafficLight[];
   getLightState: (intersectionId: string, direction: 'north_south' | 'east_west') => 'red' | 'yellow' | 'green';
+  getTimeInCurrentState: (id: string) => number;
 }
 
 export const useIntersectionStore = create<IntersectionState>((set, get) => ({
   lights: [],
+  lightStateChangeTimes: new Map(),
 
   initializeIntersections: (count) => {
     const lights: TrafficLight[] = [];
@@ -45,11 +48,22 @@ export const useIntersectionStore = create<IntersectionState>((set, get) => ({
   },
 
   updateLightState: (id, state) =>
-    set((store) => ({
-      lights: store.lights.map((light) =>
-        light.id === id ? { ...light, state } : light
-      ),
-    })),
+    set((store) => {
+      const currentLight = store.lights.find(l => l.id === id);
+      const newStateChangeTimes = new Map(store.lightStateChangeTimes);
+
+      // Track state change time if state actually changed
+      if (currentLight && currentLight.state !== state) {
+        newStateChangeTimes.set(id, Date.now());
+      }
+
+      return {
+        lights: store.lights.map((light) =>
+          light.id === id ? { ...light, state } : light
+        ),
+        lightStateChangeTimes: newStateChangeTimes
+      };
+    }),
 
   updateLightDurations: (intersectionId, northSouthGreen, eastWestGreen, yellow) =>
     set((store) => ({
@@ -73,5 +87,11 @@ export const useIntersectionStore = create<IntersectionState>((set, get) => ({
       (l) => l.intersectionId === intersectionId && l.direction === direction
     );
     return light?.state || 'red';
+  },
+
+  getTimeInCurrentState: (id) => {
+    const changeTime = get().lightStateChangeTimes.get(id);
+    if (!changeTime) return 0;
+    return Math.floor((Date.now() - changeTime) / 1000); // seconds
   },
 }));

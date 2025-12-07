@@ -2,13 +2,31 @@
 export interface TrafficUpdateRequest {
   timestamp: string;
   intersections: {
-    [intersectionId: string]: {
-      north: number;
-      south: number;
-      east: number;
-      west: number;
-    };
+    [intersectionId: string]: IntersectionTrafficData;
   };
+}
+
+export interface IntersectionTrafficData {
+  north: number;
+  south: number;
+  east: number;
+  west: number;
+  lanes_north?: number;
+  lanes_south?: number;
+  lanes_east?: number;
+  lanes_west?: number;
+  has_opposite?: number;
+  has_left?: number;
+  has_right?: number;
+  current_state_north?: string;
+  current_state_south?: string;
+  current_state_east?: string;
+  current_state_west?: string;
+  time_in_state_north?: number;
+  time_in_state_south?: number;
+  time_in_state_east?: number;
+  time_in_state_west?: number;
+  cycle?: number;
 }
 
 // Response payload (Backend → Frontend)

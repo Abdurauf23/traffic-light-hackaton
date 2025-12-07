@@ -8,3 +8,8 @@ spring:
 chat:
   context:
     text: classpath:static/context/chatContextText.txt
+
+ml:
+  python:
+    service:
+      url: ${ML_PYTHON_SERVICE_URL:http://localhost:5000}
