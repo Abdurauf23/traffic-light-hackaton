@@ -1,5 +1,7 @@
 const translations = {
     en: {
+        simulation: "Simulation",
+        simulationDescription: "Try out simulation which is aimed to give opportunity to interact wth the project.",
         mainPage: "Main Page",
         mainPageDescription: "Go to the main page to see the project.",
         contentSection: "Content",
@@ -84,6 +86,8 @@ const translations = {
         ai4: "Optional: LLM models for generating human-readable explanations",
         footer: "AI500 Hackathon 2024 | Muad'dib Team"
     }, ru: {
+        simulation: "Симуляция",
+        simulationDescription: "Попробуйте симуляцию, цель которой - дать возможность взаимодействовать с проектом.",
         mainPage: "Главная страница",
         mainPageDescription: "Вернуться на главную страницу проекта.",
         contentSection: "Ссылки на другие страницы",
